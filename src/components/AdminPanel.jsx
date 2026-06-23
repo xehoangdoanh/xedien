@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { ToggleLeft, Plus, Save, Trash2, Edit2, MessageSquare, MapPin, Store, Check, AlertCircle, Volume2 } from 'lucide-react';
 import SpecImporter from './SpecImporter';
-import { insertProductToSupabase, updateProductInSupabase, deleteProductFromSupabase, insertMessageToSupabase } from '../utils/supabaseClient';
+import { insertProductToSupabase, updateProductInSupabase, deleteProductFromSupabase, insertMessageToSupabase, updateShopSettingsInSupabase } from '../utils/supabaseClient';
 import { sendTestNotification } from '../utils/chatNotifier';
 
 export default function AdminPanel({ 
@@ -439,14 +439,49 @@ export default function AdminPanel({
     }
   };
 
-  const handleSaveSettings = () => {
-    setShopSettings({
+  const handleToggleChat = async (val) => {
+    setChatEnabled(val);
+    const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+    const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+    if (supabaseUrl && supabaseAnonKey) {
+      try {
+        await updateShopSettingsInSupabase(supabaseUrl, supabaseAnonKey, {
+          name: settingName,
+          phone: settingPhone,
+          lat: parseFloat(settingLat),
+          lng: parseFloat(settingLng),
+          address: settingAddress,
+          chatEnabled: val
+        });
+      } catch (err) {
+        console.warn('Could not save chat status to Supabase:', err.message);
+      }
+    }
+  };
+
+  const handleSaveSettings = async () => {
+    const newSettings = {
       name: settingName,
       phone: settingPhone,
       lat: parseFloat(settingLat),
       lng: parseFloat(settingLng),
       address: settingAddress
-    });
+    };
+
+    setShopSettings(newSettings);
+    
+    const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+    const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+    if (supabaseUrl && supabaseAnonKey) {
+      try {
+        await updateShopSettingsInSupabase(supabaseUrl, supabaseAnonKey, {
+          ...newSettings,
+          chatEnabled
+        });
+      } catch (err) {
+        console.warn('Could not save shop settings to Supabase:', err.message);
+      }
+    }
     
     // Lưu cấu hình Telegram/Zalo vào localStorage
     localStorage.setItem('shop-notification-settings', JSON.stringify({
@@ -539,7 +574,7 @@ export default function AdminPanel({
                 <input 
                   type="checkbox" 
                   checked={chatEnabled} 
-                  onChange={(e) => setChatEnabled(e.target.checked)} 
+                  onChange={(e) => handleToggleChat(e.target.checked)} 
                 />
                 <span className="switch-slider" />
               </label>

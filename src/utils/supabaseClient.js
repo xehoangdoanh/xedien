@@ -134,3 +134,46 @@ export const insertMessageToSupabase = async (url, anonKey, message) => {
   }
   return response.json();
 };
+
+export const fetchShopSettingsFromSupabase = async (url, anonKey) => {
+  const cleanUrl = url.replace(/\/$/, '');
+  const response = await fetch(`${cleanUrl}/rest/v1/shop_settings?id=eq.default`, {
+    headers: {
+      apikey: anonKey,
+      Authorization: `Bearer ${anonKey}`
+    }
+  });
+  if (!response.ok) {
+    throw new Error(`Lỗi tải cấu hình shop (HTTP ${response.status})`);
+  }
+  const data = await response.json();
+  return data[0]; // Trả về cấu hình dòng đầu tiên (default)
+};
+
+export const updateShopSettingsInSupabase = async (url, anonKey, settings) => {
+  const cleanUrl = url.replace(/\/$/, '');
+  const response = await fetch(`${cleanUrl}/rest/v1/shop_settings`, {
+    method: 'POST',
+    headers: {
+      apikey: anonKey,
+      Authorization: `Bearer ${anonKey}`,
+      'Content-Type': 'application/json',
+      Prefer: 'resolution=merge-duplicates,return=representation'
+    },
+    body: JSON.stringify({
+      id: 'default',
+      name: settings.name,
+      phone: settings.phone,
+      lat: settings.lat,
+      lng: settings.lng,
+      address: settings.address,
+      chat_enabled: settings.chatEnabled
+    })
+  });
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({}));
+    throw new Error(errorData.message || `Cập nhật cấu hình shop thất bại (HTTP ${response.status})`);
+  }
+  return response.json();
+};
+

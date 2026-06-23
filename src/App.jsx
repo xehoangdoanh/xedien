@@ -9,7 +9,7 @@ import ChatBox from './components/ChatBox';
 import AdminPanel from './components/AdminPanel';
 import ToastNotification from './components/ToastNotification';
 import { MapPin, Search, Lock } from 'lucide-react';
-import { fetchProductsFromSupabase, fetchMessagesFromSupabase, insertMessageToSupabase } from './utils/supabaseClient';
+import { fetchProductsFromSupabase, fetchMessagesFromSupabase, insertMessageToSupabase, fetchShopSettingsFromSupabase } from './utils/supabaseClient';
 
 export default function App() {
   // Global States
@@ -101,6 +101,31 @@ export default function App() {
       setLoadingProducts(false);
     }
   }, []);
+
+  // Sync Shop Settings from Supabase
+  useEffect(() => {
+    const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+    const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+
+    if (!supabaseUrl || !supabaseAnonKey) return;
+
+    fetchShopSettingsFromSupabase(supabaseUrl, supabaseAnonKey)
+      .then(data => {
+        if (data) {
+          setShopSettings({
+            name: data.name,
+            phone: data.phone,
+            lat: data.lat,
+            lng: data.lng,
+            address: data.address
+          });
+          setChatEnabled(data.chat_enabled);
+        }
+      })
+      .catch(err => {
+        console.warn('Could not sync shop settings from Supabase (Check if the "shop_settings" table is created):', err.message);
+      });
+  }, [setShopSettings, setChatEnabled]);
 
   // Sync messages from Supabase
   useEffect(() => {
