@@ -19,6 +19,33 @@ export default function ChatBox({
 
   const cleanPhone = getCleanPhone(shopPhone);
 
+  const handleZaloClick = (e) => {
+    e.preventDefault();
+    
+    let messageText = "Chào shop, tôi cần tư vấn hỗ trợ!";
+    if (activeProductAttachment) {
+      const priceText = activeProductAttachment.priceMode === 'contact' 
+        ? 'Giá liên hệ' 
+        : activeProductAttachment.priceMode === 'hidden'
+          ? 'Giá inbox'
+          : formatPrice(activeProductAttachment.price);
+      messageText = `Chào shop, tôi muốn nhận tư vấn báo giá lăn bánh và khuyến mãi cho mẫu xe: ${activeProductAttachment.name} (${priceText}).`;
+    }
+
+    // 1. Copy to clipboard (failsafe)
+    try {
+      navigator.clipboard.writeText(messageText);
+    } catch (err) {
+      console.warn('Clipboard copy failed:', err);
+    }
+    
+    // 2. Alert instruction
+    alert(`📋 Đã tự động sao chép thông tin xe:\n"${messageText}"\n\nBạn chỉ cần DÁN (Paste / Giữ màn hình chọn Dán) vào ô chat Zalo của shop để gửi nhé!`);
+
+    // 3. Open Zalo (synchronously within user click to avoid popup block)
+    window.open(`https://zalo.me/${cleanPhone}`, '_blank');
+  };
+
   if (!chatEnabled) {
     return (
       <div className="chat-disabled-state" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', padding: '24px', textAlign: 'center' }}>
@@ -38,6 +65,7 @@ export default function ChatBox({
           
           <a 
             href={`https://zalo.me/${cleanPhone}`} 
+            onClick={handleZaloClick}
             target="_blank" 
             rel="noopener noreferrer" 
             className="btn btn-secondary" 
@@ -125,6 +153,7 @@ export default function ChatBox({
       <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', width: '100%', marginTop: 'auto' }}>
         <a 
           href={`https://zalo.me/${cleanPhone}`} 
+          onClick={handleZaloClick}
           target="_blank" 
           rel="noopener noreferrer" 
           className="btn btn-secondary" 
