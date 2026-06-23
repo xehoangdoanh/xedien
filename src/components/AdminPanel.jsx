@@ -652,138 +652,7 @@ export default function AdminPanel({
                 </div>
               </div>
 
-              {/* Telegram & Zalo Notifications Configuration Card */}
-              <div style={{ margin: '20px 0', padding: '16px', background: 'var(--surface-variant)', border: '1px solid var(--border)', borderRadius: 'var(--radius-md)' }}>
-                <h3 style={{ fontSize: '0.85rem', fontWeight: 800, margin: '0 0 8px 0', display: 'flex', alignItems: 'center', gap: '6px', color: 'var(--text)' }}>
-                  🔔 CẤU HÌNH NHẬN THÔNG BÁO ĐẨY
-                </h3>
-                <p style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', margin: '0 0 16px 0', lineHeight: 1.4 }}>
-                  Nhận tin nhắn báo khách hỏi xe trực tiếp về điện thoại (hiển thị trên màn hình khóa) để trả lời khách ngay lập tức.
-                </p>
-
-                {/* Telegram Setup Card */}
-                <div style={{ borderBottom: '1px dashed var(--border)', paddingBottom: '16px', marginBottom: '16px' }}>
-                  <div style={{ fontWeight: 700, fontSize: '0.8rem', color: 'var(--primary)', marginBottom: '8px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <span>1. NHẬN THÔNG BÁO QUA TELEGRAM</span>
-                    <button 
-                      type="button"
-                      onClick={handleTestTelegram}
-                      disabled={telegramTestStatus === 'sending'}
-                      style={{ 
-                        background: 'var(--primary-container)', 
-                        color: 'var(--primary)', 
-                        border: 'none', 
-                        padding: '4px 10px', 
-                        borderRadius: '12px', 
-                        fontSize: '0.7rem', 
-                        fontWeight: 700, 
-                        cursor: 'pointer',
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '4px'
-                      }}
-                    >
-                      {telegramTestStatus === 'sending' ? 'Đang gửi...' : telegramTestStatus === 'success' ? '✅ Thành công' : telegramTestStatus === 'error' ? '❌ Lỗi' : '⚡ Gửi thử'}
-                    </button>
-                  </div>
-
-                  {telegramTestStatus === 'error' && (
-                    <div style={{ fontSize: '0.7rem', color: 'var(--error)', margin: '0 0 8px 0', fontWeight: 600 }}>
-                      ⚠️ {telegramTestError}
-                    </div>
-                  )}
-
-                  <div className="form-row-2">
-                    <div className="form-group" style={{ marginBottom: '8px' }}>
-                      <label style={{ fontSize: '0.7rem' }}>Telegram Bot Token</label>
-                      <input 
-                        type="text" 
-                        value={telegramToken} 
-                        onChange={(e) => setTelegramToken(e.target.value)} 
-                        placeholder="Ví dụ: 123456789:ABCdefGh..."
-                        className="form-input"
-                        style={{ fontSize: '0.8rem', height: '34px' }}
-                      />
-                    </div>
-                    <div className="form-group" style={{ marginBottom: '8px' }}>
-                      <label style={{ fontSize: '0.7rem' }}>Telegram Chat ID người nhận</label>
-                      <input 
-                        type="text" 
-                        value={telegramChatId} 
-                        onChange={(e) => setTelegramChatId(e.target.value)} 
-                        placeholder="Ví dụ: 987654321"
-                        className="form-input"
-                        style={{ fontSize: '0.8rem', height: '34px' }}
-                      />
-                    </div>
-                  </div>
-
-                  <details style={{ marginTop: '8px' }}>
-                    <summary style={{ fontSize: '0.75rem', color: 'var(--primary)', cursor: 'pointer', fontWeight: 600 }}>Xem hướng dẫn lấy Token & Chat ID</summary>
-                    <div style={{ fontSize: '0.72rem', color: 'var(--text-secondary)', padding: '10px', background: 'var(--background)', borderRadius: '6px', marginTop: '6px', lineHeight: 1.5, border: '1px solid var(--border)' }}>
-                      1. Mở Telegram, tìm kiếm <strong>@BotFather</strong> và gửi <code>/newbot</code> để tạo Bot mới. Sao chép dán chuỗi API Token vào ô trên.<br />
-                      2. Tìm bot <strong>@userinfobot</strong> hoặc <strong>@GetIdsBot</strong> trên Telegram, nhấn Start để xem <strong>Chat ID</strong> cá nhân của bạn và dán vào ô trên.<br />
-                      3. <strong>⚠️ RẤT QUAN TRỌNG:</strong> Bạn phải nhắn tin trước cho bot của bạn (nhấn nút <strong>Start</strong> trong cuộc trò chuyện với bot vừa tạo) thì bot mới được phép gửi thông báo cho bạn.
-                    </div>
-                  </details>
-                </div>
-
-                {/* Zalo Setup Card */}
-                <div>
-                  <div style={{ fontWeight: 700, fontSize: '0.8rem', color: '#0068ff', marginBottom: '8px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <span>2. NHẬN THÔNG BÁO QUA ZALO</span>
-                    <button 
-                      type="button"
-                      onClick={handleTestZalo}
-                      disabled={zaloTestStatus === 'sending'}
-                      style={{ 
-                        background: 'rgba(0, 104, 255, 0.1)', 
-                        color: '#0068ff', 
-                        border: 'none', 
-                        padding: '4px 10px', 
-                        borderRadius: '12px', 
-                        fontSize: '0.7rem', 
-                        fontWeight: 700, 
-                        cursor: 'pointer',
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '4px'
-                      }}
-                    >
-                      {zaloTestStatus === 'sending' ? 'Đang gửi...' : zaloTestStatus === 'success' ? '✅ Thành công' : zaloTestStatus === 'error' ? '❌ Lỗi' : '⚡ Gửi thử'}
-                    </button>
-                  </div>
-
-                  {zaloTestStatus === 'error' && (
-                    <div style={{ fontSize: '0.7rem', color: 'var(--error)', margin: '0 0 8px 0', fontWeight: 600 }}>
-                      ⚠️ {zaloTestError}
-                    </div>
-                  )}
-
-                  <div className="form-group" style={{ marginBottom: '8px' }}>
-                    <label style={{ fontSize: '0.7rem' }}>Zalo Webhook URL (Make.com / n8n)</label>
-                    <input 
-                      type="text" 
-                      value={zaloWebhookUrl} 
-                      onChange={(e) => setZaloWebhookUrl(e.target.value)} 
-                      placeholder="Ví dụ: https://hook.us1.make.com/..."
-                      className="form-input"
-                      style={{ fontSize: '0.8rem', height: '34px' }}
-                    />
-                  </div>
-
-                  <details style={{ marginTop: '8px' }}>
-                    <summary style={{ fontSize: '0.75rem', color: '#0068ff', cursor: 'pointer', fontWeight: 600 }}>Xem hướng dẫn kết nối Zalo Webhook</summary>
-                    <div style={{ fontSize: '0.72rem', color: 'var(--text-secondary)', padding: '10px', background: 'var(--background)', borderRadius: '6px', marginTop: '6px', lineHeight: 1.5, border: '1px solid var(--border)' }}>
-                      Mã kết nối Zalo OA chính thức hết hạn sau 25 giờ, vì vậy sử dụng Webhook kết nối qua Make.com hoặc n8n là phương án tối ưu, bền bỉ nhất:<br />
-                      1. Đăng ký tài khoản miễn phí trên <strong>Make.com</strong>.<br />
-                      2. Tạo kịch bản mới (Create new scenario), chọn mô-đun kích hoạt là <strong>Webhooks -&gt; Custom Webhook</strong> để lấy địa chỉ URL Webhook mới và dán vào ô trên.<br />
-                      3. Trên Make.com, tạo bước tiếp theo kết nối tới Zalo để chuyển tiếp dữ liệu nhận được đến tài khoản Zalo cá nhân/nhóm của bạn.<br />
-                      4. Nhấn <strong>"Gửi thử"</strong> ở trên để truyền dữ liệu mẫu sang Make.com giúp thiết lập kịch bản nhanh gọn.
-                    </div>
-                  </details>
-                </div>
-              </div>
+              {/* Notifications settings are now managed directly via personal Zalo/Hotline redirection - no webhook configuration required. */}
 
               <button 
                 id="btn-save-settings"
@@ -1192,116 +1061,29 @@ export default function AdminPanel({
 
         {/* SUBTAB 3: CUSTOMER MESSAGE INBOX (TIN NHẮN KHÁCH HÀNG) */}
         {activeAdminSubTab === 'messages' && (
-          <div className="admin-section">
-            <div className="admin-section-header">
-              <span>Hộp Thư Tư Vấn Khách Hàng</span>
-              {soundEnabled && <Volume2 size={16} title="Âm thanh thông báo bật" />}
+          <div className="admin-section" style={{ padding: '24px', textAlign: 'center' }}>
+            <div style={{ width: '56px', height: '56px', borderRadius: '50%', background: 'rgba(0, 104, 255, 0.1)', color: '#0068ff', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px auto' }}>
+              <MessageSquare size={26} />
             </div>
-
-            {!activeChatUser ? (
-              // List conversations
-              <div className="admin-chat-list">
-                {(() => {
-                  const groups = {};
-                  conversations.forEach(msg => {
-                    const sId = msg.session_id || 'default';
-                    if (!groups[sId]) {
-                      groups[sId] = [];
-                    }
-                    groups[sId].push(msg);
-                  });
-                  
-                  if (Object.keys(groups).length === 0) {
-                    return (
-                      <div style={{ padding: '40px 16px', textAlign: 'center', color: 'var(--text-secondary)' }}>
-                        <MessageSquare size={24} style={{ opacity: 0.5, marginBottom: '8px' }} />
-                        <p style={{ fontSize: '0.85rem' }}>Hiện chưa có tin nhắn nào từ khách hàng.</p>
-                      </div>
-                    );
-                  }
-                  
-                  return Object.entries(groups).map(([sId, msgs]) => {
-                    const lastMsg = msgs[msgs.length - 1];
-                    const displayName = sId.startsWith('cust-') ? `Khách hàng #${sId.replace('cust-', '')}` : 'Khách hàng vô danh';
-                    return (
-                      <div 
-                        key={sId}
-                        className="admin-chat-item" 
-                        onClick={() => setActiveChatUser(sId)}
-                      >
-                        <div className="chat-item-meta">
-                          <span style={{ fontWeight: 700, fontSize: '0.9rem' }}>{displayName}</span>
-                          <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', maxWidth: '280px', display: 'block', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                            {lastMsg?.text}
-                          </span>
-                        </div>
-                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '4px' }}>
-                          <span style={{ fontSize: '0.7rem', color: 'var(--text-secondary)' }}>
-                            {lastMsg?.timestamp}
-                          </span>
-                          {lastMsg?.sender === 'customer' && (
-                            <span className="chat-item-unread">Mới</span>
-                          )}
-                        </div>
-                      </div>
-                    );
-                  });
-                })()}
-              </div>
-            ) : (
-              // Chat detailing/typing response
-              <div style={{ display: 'flex', flexDirection: 'column', height: '360px', background: 'var(--background)' }}>
-                <div style={{ background: 'var(--surface)', padding: '10px 16px', borderBottom: '1px solid var(--border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <span style={{ fontWeight: 700, fontSize: '0.85rem' }}>Đang chat với: {activeChatUser.startsWith('cust-') ? `Khách hàng #${activeChatUser.replace('cust-', '')}` : 'Khách hàng vô danh'}</span>
-                  <button 
-                    onClick={() => setActiveChatUser(null)}
-                    style={{ background: 'none', border: 'none', color: 'var(--primary)', fontWeight: 700, fontSize: '12px', cursor: 'pointer' }}
-                  >
-                    Quay lại inbox
-                  </button>
-                </div>
-
-                <div className="chat-messages" style={{ flex: 1, padding: '12px', overflowY: 'auto' }}>
-                  {conversations
-                    .filter(msg => (msg.session_id || 'default') === activeChatUser)
-                    .map((msg) => (
-                      <div key={msg.id} className={`message-bubble ${msg.sender === 'shop' ? 'customer' : 'shop'}`}>
-                        {/* Note: in this admin bubble, 'customer' styling is right-aligned (which is shop's reply) and 'shop' styling is left-aligned (customer's messages) */}
-                        {msg.attachedProduct && (
-                          <div className="message-attachment-card" onClick={() => {
-                            // Allow admin to open product directly
-                            const found = products.find(p => p.id === msg.attachedProduct.id);
-                            if (found) {
-                              setActiveTab('catalog');
-                            }
-                          }}>
-                            <img src={msg.attachedProduct.image} alt="" className="attachment-img" />
-                            <div>
-                              <div className="attachment-title">{msg.attachedProduct.name}</div>
-                              <div className="attachment-price">Hỏi mua mẫu xe này</div>
-                            </div>
-                          </div>
-                        )}
-                        <div>{msg.text}</div>
-                        <div className="message-time">{msg.timestamp}</div>
-                      </div>
-                    ))}
-                </div>
-
-                <form className="chat-input-bar" onSubmit={handleSendAdminReply}>
-                  <input 
-                    type="text" 
-                    value={adminReplyText}
-                    onChange={(e) => setAdminReplyText(e.target.value)}
-                    placeholder="Trả lời khách hàng..." 
-                    className="chat-input"
-                  />
-                  <button type="submit" className="chat-send-btn">
-                    <Check size={16} />
-                  </button>
-                </form>
-              </div>
-            )}
+            <h3 style={{ fontSize: '1rem', fontWeight: 800, color: 'var(--text)', marginBottom: '8px' }}>Chăm Sóc Khách Hàng Qua Zalo</h3>
+            <p style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', lineHeight: 1.5, maxWidth: '320px', margin: '0 auto 20px auto' }}>
+              Khách hàng khi nhấp nút liên hệ tư vấn trên trang web sẽ tự động mở ứng dụng Zalo để nhắn tin trực tiếp tới bạn.<br />
+              Do đó, toàn bộ tin nhắn tư vấn sẽ được quản lý và thông báo đẩy trực tiếp, bảo mật trên ứng dụng Zalo cá nhân của bạn.
+            </p>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', maxWidth: '280px', margin: '0 auto' }}>
+              <a 
+                href="https://chat.zalo.me" 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="btn btn-secondary" 
+                style={{ textDecoration: 'none', background: '#0068ff', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', height: '40px', borderRadius: '20px', fontWeight: 700, fontSize: '0.85rem', border: 'none' }}
+              >
+                Mở Zalo Web (chat.zalo.me)
+              </a>
+              <span style={{ fontSize: '0.7rem', color: 'var(--text-secondary)' }}>
+                Bạn cũng có thể mở ứng dụng Zalo trên điện thoại để trả lời khách hàng tiện lợi hơn.
+              </span>
+            </div>
           </div>
         )}
 
