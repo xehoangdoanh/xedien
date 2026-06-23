@@ -32,18 +32,20 @@ export default function ChatBox({
       messageText = `Chào shop, tôi muốn nhận tư vấn báo giá lăn bánh và khuyến mãi cho mẫu xe: ${activeProductAttachment.name} (${priceText}).`;
     }
 
-    // 1. Copy to clipboard (failsafe)
+    // 1. Sao chép vào bộ nhớ tạm (dự phòng nếu Zalo không tự điền)
     try {
       navigator.clipboard.writeText(messageText);
     } catch (err) {
       console.warn('Clipboard copy failed:', err);
     }
     
-    // 2. Alert instruction
-    alert(`📋 Đã tự động sao chép thông tin xe:\n"${messageText}"\n\nBạn chỉ cần DÁN (Paste / Giữ màn hình chọn Dán) vào ô chat Zalo của shop để gửi nhé!`);
+    // 2. Hướng dẫn nhanh cho khách hàng
+    alert(`📋 Hệ thống đã chuẩn bị sẵn tin nhắn tư vấn:\n"${messageText}"\n\nZalo sẽ mở ra ngay. Nếu nội dung không tự động điền sẵn, bạn chỉ cần nhấn Dán (Paste) vào ô chat và gửi nhé!`);
 
-    // 3. Open Zalo (synchronously within user click to avoid popup block)
-    window.open(`https://zalo.me/${cleanPhone}`, '_blank');
+    // 3. Mở Zalo kết hợp truyền các tham số điền sẵn (text, msg, message) để tối ưu tương thích
+    const encodedText = encodeURIComponent(messageText);
+    const zaloUrl = `https://zalo.me/${cleanPhone}?text=${encodedText}&msg=${encodedText}&message=${encodedText}`;
+    window.open(zaloUrl, '_blank');
   };
 
   if (!chatEnabled) {
