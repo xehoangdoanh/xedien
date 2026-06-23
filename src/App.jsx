@@ -178,10 +178,48 @@ export default function App() {
   };
 
   const handleChatPress = (product) => {
-    if (product) {
-      setActiveProductAttachment(product);
-    }
-    setActiveTab('chat');
+    if (!product) return;
+
+    const cleanPhone = shopSettings.phone.replace(/\s+/g, '').replace(/[^0-9]/g, '');
+    const priceText = product.priceMode === 'contact' 
+      ? 'Giá liên hệ' 
+      : product.priceMode === 'hidden'
+        ? 'Giá inbox'
+        : new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(product.price);
+
+    const messageText = `Chào shop, tôi muốn nhận tư vấn báo giá lăn bánh và khuyến mãi cho mẫu xe: ${product.name} (${priceText}).`;
+
+    // Copy to clipboard with fallback
+    const copyToClipboard = (text) => {
+      if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(text).catch(() => fallbackCopy(text));
+      } else {
+        fallbackCopy(text);
+      }
+    };
+
+    const fallbackCopy = (text) => {
+      const textArea = document.createElement("textarea");
+      textArea.value = text;
+      textArea.style.position = "fixed";
+      textArea.style.opacity = "0";
+      document.body.appendChild(textArea);
+      textArea.focus();
+      textArea.select();
+      try {
+        document.execCommand('copy');
+      } catch (err) {
+        console.warn('Fallback copy failed:', err);
+      }
+      document.body.removeChild(textArea);
+    };
+
+    copyToClipboard(messageText);
+
+    // Open Zalo immediately in a new window/tab
+    const encodedText = encodeURIComponent(messageText);
+    const zaloUrl = `https://zalo.me/${cleanPhone}?text=${encodedText}&msg=${encodedText}&message=${encodedText}`;
+    window.open(zaloUrl, '_blank');
   };
 
   const handleViewMap = (product) => {

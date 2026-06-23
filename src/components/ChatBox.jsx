@@ -32,17 +32,34 @@ export default function ChatBox({
       messageText = `Chào shop, tôi muốn nhận tư vấn báo giá lăn bánh và khuyến mãi cho mẫu xe: ${activeProductAttachment.name} (${priceText}).`;
     }
 
-    // 1. Sao chép vào bộ nhớ tạm (dự phòng nếu Zalo không tự điền)
-    try {
-      navigator.clipboard.writeText(messageText);
-    } catch (err) {
-      console.warn('Clipboard copy failed:', err);
-    }
-    
-    // 2. Hướng dẫn nhanh cho khách hàng
-    alert(`📋 Hệ thống đã chuẩn bị sẵn tin nhắn tư vấn:\n"${messageText}"\n\nZalo sẽ mở ra ngay. Nếu nội dung không tự động điền sẵn, bạn chỉ cần nhấn Dán (Paste) vào ô chat và gửi nhé!`);
+    // 1. Sao chép âm thầm vào bộ nhớ tạm với fallback
+    const copyToClipboard = (text) => {
+      if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(text).catch(() => fallbackCopy(text));
+      } else {
+        fallbackCopy(text);
+      }
+    };
 
-    // 3. Mở Zalo kết hợp truyền các tham số điền sẵn (text, msg, message) để tối ưu tương thích
+    const fallbackCopy = (text) => {
+      const textArea = document.createElement("textarea");
+      textArea.value = text;
+      textArea.style.position = "fixed";
+      textArea.style.opacity = "0";
+      document.body.appendChild(textArea);
+      textArea.focus();
+      textArea.select();
+      try {
+        document.execCommand('copy');
+      } catch (err) {
+        console.warn('Fallback copy failed:', err);
+      }
+      document.body.removeChild(textArea);
+    };
+
+    copyToClipboard(messageText);
+
+    // 2. Mở Zalo lập tức kết hợp truyền các tham số điền sẵn
     const encodedText = encodeURIComponent(messageText);
     const zaloUrl = `https://zalo.me/${cleanPhone}?text=${encodedText}&msg=${encodedText}&message=${encodedText}`;
     window.open(zaloUrl, '_blank');
