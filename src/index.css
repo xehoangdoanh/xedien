@@ -75,6 +75,7 @@ body {
   justify-content: center;
   align-items: center;
   min-height: 100vh;
+  min-height: 100dvh;
   overflow: hidden;
 }
 
@@ -83,6 +84,7 @@ body {
   width: 100%;
   max-width: 600px; /* Increased from 480px for a more roomy, tablet-like view on desktop */
   height: 100vh;
+  height: 100dvh;
   background-color: var(--background);
   box-shadow: 0 0 40px rgba(0, 0, 0, 0.6);
   position: relative;
@@ -95,6 +97,7 @@ body {
   #root {
     max-width: 100%;
     height: 100vh;
+    height: 100dvh;
     box-shadow: none;
   }
 }
